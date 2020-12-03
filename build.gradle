@@ -31,8 +31,13 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.grpc:micronaut-grpc-runtime")
     implementation("javax.annotation:javax.annotation-api")
+
+    //Kotlin essential
+    implementation("io.grpc:grpc-kotlin-stub:${grpctVersionKotlin}")
+
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
     testImplementation("io.micronaut:micronaut-http-client")
 }
 
@@ -64,17 +69,25 @@ sourceSets {
     main {
         java {
             srcDirs("build/generated/source/proto/main/grpc")
+            //Kotlin essential
+            srcDirs("build/generated/source/proto/main/grpckt")
             srcDirs("build/generated/source/proto/main/java")
         }
     }
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:3.14.0" }
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.33.1" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+        //Kotlin essential
+        grpckt { artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpctVersionKotlin}" }
     }
     generateProtoTasks {
-        all()*.plugins { grpc {} }
+        all()*.plugins {
+            grpc {}
+            //Kotlin essential
+            grpckt {}
+        }
     }
 }
