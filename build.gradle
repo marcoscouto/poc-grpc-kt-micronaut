@@ -32,11 +32,17 @@ dependencies {
     implementation("io.micronaut.grpc:micronaut-grpc-runtime")
     implementation("javax.annotation:javax.annotation-api")
 
-    //Kotlin essential
+    // Database configuration
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    runtimeOnly("org.postgresql:postgresql")
+
+    // Kotlin essential
     implementation("io.grpc:grpc-kotlin-stub:${grpctVersionKotlin}")
 
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
 
     testImplementation("io.micronaut:micronaut-http-client")
 }
@@ -69,7 +75,7 @@ sourceSets {
     main {
         java {
             srcDirs("build/generated/source/proto/main/grpc")
-            //Kotlin essential
+            // Kotlin essential
             srcDirs("build/generated/source/proto/main/grpckt")
             srcDirs("build/generated/source/proto/main/java")
         }
@@ -80,13 +86,13 @@ protobuf {
     protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
     plugins {
         grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
-        //Kotlin essential
+        // Kotlin essential
         grpckt { artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpctVersionKotlin}" }
     }
     generateProtoTasks {
         all()*.plugins {
             grpc {}
-            //Kotlin essential
+            // Kotlin essential
             grpckt {}
         }
     }
