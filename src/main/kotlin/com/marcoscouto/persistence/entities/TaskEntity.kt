@@ -1,7 +1,7 @@
 package com.marcoscouto.persistence.entities
 
 import com.marcoscouto.Task
-import com.marcoscouto.TaskRequest
+import com.marcoscouto.TaskSaveRequest
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDateTime
@@ -21,12 +21,11 @@ data class TaskEntity (@Column(nullable = false) var title: String,
     lateinit var createdAt: LocalDateTime
 
     @Deprecated("Constructor used by hibernate")
-    constructor() : this(String(), String())
+    constructor() :
+            this(String(), String())
 
-    constructor(request: TaskRequest){
-        this.title = request.title
-        this.message = request.message
-    }
+    constructor(request: TaskSaveRequest) :
+            this(request.title, request.message)
 
     fun toTask(): Task {
         return Task.newBuilder()

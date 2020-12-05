@@ -8,16 +8,21 @@ option objc_class_prefix = "HLW";
 package com.marcoscouto;
 
 service TaskService {
-  rpc save (TaskRequest) returns (Task) {}
-}
-
-message TaskRequest {
-  string title = 1;
-  string message = 2;
+  rpc save (TaskSaveRequest) returns (Task) {}
+  rpc findById (TaskFindByIdRequest) returns (Task) {}
 }
 
 message Task {
     string id = 1;
     string title = 2;
     string message = 3;
+}
+
+message TaskSaveRequest {
+  string title = 1;
+  string message = 2;
+}
+
+message TaskFindByIdRequest {
+  string id = 1;
 }
