@@ -4,20 +4,32 @@ import com.marcoscouto.Task
 import com.marcoscouto.TaskFindByIdRequest
 import com.marcoscouto.TaskSaveRequest
 import com.marcoscouto.TaskServiceGrpcKt
+import com.marcoscouto.dto.TaskRequest
 import com.marcoscouto.persistence.entities.TaskEntity
 import com.marcoscouto.services.TaskService
 import io.grpc.Status
+import io.micronaut.validation.validator.Validator
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 
 @Singleton
-class TaskEndpoint(val service: TaskService): TaskServiceGrpcKt.TaskServiceCoroutineImplBase() {
+class TaskEndpoint(val service: TaskService, val validator: Validator): TaskServiceGrpcKt.TaskServiceCoroutineImplBase() {
 
     val log = LoggerFactory.getLogger(TaskEndpoint::class.java)
 
     override suspend fun save(request: TaskSaveRequest): Task {
         log.info("[TASK] Save task requested")
-        val entity = TaskEntity(request)
+        val dto = TaskRequest(request)
+        val validation = validator.validate(dto)
+
+        if(validation.isNotEmpty()){
+            validation.forEach { log.error("[TASK] Task request invalid: ${it.message}") }
+            throw Status.INVALID_ARGUMENT
+                .withDescription("Erro de validação")
+                .asException()
+        }
+
+        val entity = TaskEntity(dto)
         val saved = this.service.save(entity)
         return saved.toTask()
     }

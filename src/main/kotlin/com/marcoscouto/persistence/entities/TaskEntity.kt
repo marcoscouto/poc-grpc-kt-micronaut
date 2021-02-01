@@ -2,6 +2,7 @@ package com.marcoscouto.persistence.entities
 
 import com.marcoscouto.Task
 import com.marcoscouto.TaskSaveRequest
+import com.marcoscouto.dto.TaskRequest
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDateTime
@@ -24,7 +25,7 @@ data class TaskEntity (@Column(nullable = false) var title: String,
     constructor() :
             this(String(), String())
 
-    constructor(request: TaskSaveRequest) :
+    constructor(request: TaskRequest) :
             this(request.title, request.message)
 
     fun toTask(): Task {
